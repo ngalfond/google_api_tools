@@ -23,6 +23,11 @@ print(f'The current estimated commute to work will take {trip_time}.')
 
 time_int = int(trip_time.split()[0])
 
+rev_matrix = gmaps.directions(work_location, home_location)
+
+rev_time = (rev_matrix[0]["legs"][0]["duration"]["text"])
+
+print(f'The trip back will take {rev_time}.')
 
 with open('trips.csv', 'r+') as t:
     all_times = t.read().split(',')[:-1]
