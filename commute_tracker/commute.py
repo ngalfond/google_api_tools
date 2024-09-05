@@ -1,42 +1,49 @@
-import googlemaps
-import pprint
-import statistics
-import csv
+import requests
 import os
+import statistics
 
+url = 'https://routes.googleapis.com/directions/v2:computeRoutes'
 api_key = os.getenv("GOOGLE_API_KEY")
+home_location = os.getenv("HOME_ADDRESS")
+work_location = os.getenv("WORK_ADDRESS")
 
-gmaps = googlemaps.Client(key=api_key)
+headers = {'Content-Type': 'application/json',
+           'X-Goog-Api-Key': api_key,
+           'X-Goog-FieldMask': 'routes.duration'}
 
-work_location = 35.83158882391046, -82.67251414517058
+data = {
+  "origin":{
+    "address": home_location
+  },
+  "destination":{
+    "address": work_location
+  },
+  "travelMode": "DRIVE",
+  "routingPreference": "TRAFFIC_AWARE",
+  "computeAlternativeRoutes": False,
+  "languageCode": "en-US",}
 
-home_location = 35.59424863065563, -82.55800273168425
+response = requests.post(url, headers=headers, json=data)
+print(response.json())
+trip_time_sec = int(response.json()['routes'][0]['duration'].replace("s", ""))
+
+trip_time = round((trip_time_sec/60), 2)
+
+print(response.status_code)
+print(trip_time)
 
 
-full_matrix = gmaps.directions(home_location, work_location)
-
-#pprint.pprint(full_matrix[0]["legs"][0]["duration"]["text"])
-
-trip_time = (full_matrix[0]["legs"][0]["duration"]["text"])
-
-
-print(f'The current estimated commute to work will take {trip_time}.')
-
-time_int = int(trip_time.split()[0])
-
-rev_matrix = gmaps.directions(work_location, home_location)
-
-rev_time = (rev_matrix[0]["legs"][0]["duration"]["text"])
-
-print(f'The trip back will take {rev_time}.')
-'''
 with open('trips.csv', 'r+') as t:
     all_times = t.read().split(',')[:-1]
-    t.write(f"{time_int},", )
+    t.write(f"{trip_time},", )
 
-int_times = map(int, all_times)
+float_times = map(float, all_times)
 
 print(all_times)
 
-print(statistics.mean(int_times))
-'''
+average_trip = round(statistics.mean(float_times), 2)
+print(average_trip)
+
+minutes = str(trip_time).split('.')[0]
+seconds = round(int(str(trip_time).split('.')[1])*.6)
+print(f'The current estimated commute to work will take {minutes} minutes and {seconds} seconds.')
