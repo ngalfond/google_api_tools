@@ -2,12 +2,16 @@ import requests
 import os
 import statistics
 
-url = 'https://routes.googleapis.com/directions/v2:computeRoutes'
-api_key = os.getenv("GOOGLE_API_KEY")
-home_location = os.getenv("HOME_ADDRESS")
-work_location = os.getenv("WORK_ADDRESS")
+#config = configparser.ConfigParser()
+#config.read('.commute.conf')
 
-log_file = "trips.csv"
+
+url = 'https://routes.googleapis.com/directions/v2:computeRoutes'
+api_key = os.getenv('GOOGLE_API_KEY')
+home_location = os.getenv('HOME_ADDRESS')
+work_location = os.getenv('WORK_ADDRESS')
+log_file = 'trips.csv'
+
 
 headers = {'Content-Type': 'application/json',
            'X-Goog-Api-Key': api_key,
@@ -34,7 +38,10 @@ def get_trip_time(req):
 def make_readable(time):
   minutes = str(time).split('.')[0]
   seconds = round(int(str(time).split('.')[1])*.6)
-  return f"{minutes} minutes and {seconds} seconds"
+  if minutes!='0':
+    return f"{minutes} minutes and {seconds} seconds"
+  else:
+     return f"{seconds} seconds"
 
 def write_to_log(log, time):
   with open(log, 'a+') as t:
