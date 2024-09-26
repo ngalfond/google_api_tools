@@ -1,6 +1,8 @@
 import requests
 import os
 import statistics
+import smtplib
+from email.message import EmailMessage
 
 #config = configparser.ConfigParser()
 #config.read('.commute.conf')
@@ -10,8 +12,10 @@ url = 'https://routes.googleapis.com/directions/v2:computeRoutes'
 api_key = os.getenv('GOOGLE_API_KEY')
 home_location = os.getenv('HOME_ADDRESS')
 work_location = os.getenv('WORK_ADDRESS')
-log_file = 'trips.csv'
-
+log_file = os.getenv('LOG_FILE')
+contact = os.getenv('CONTACT')
+snmp_server = os.getenv('SNMP_SERVER')
+snmp_login = os.getenv('SNMP_LOGIN')
 
 headers = {'Content-Type': 'application/json',
            'X-Goog-Api-Key': api_key,
@@ -57,15 +61,27 @@ def calculate_average(log):
 def find_difference(log):
     diff = round((calculate_average(log) - trip_time), 2)
     if diff > 0:
-       print(f"This is {make_readable(diff)} less than usual :)")
+       return(f"This is {make_readable(diff)} less than usual :)")
     if diff <= 0:
        diff = diff*(-1)
-       print(f"This is {make_readable(diff)} more than usual :(")
+       return(f"This is {make_readable(diff)} more than usual :(")
+
+def send_email(message):
+  mail_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+  mail_server.login(snmp_server, snmp_login)
+  msg = EmailMessage()
+  msg['From'] = "free.smtp.access@gmail.com"
+  msg['To'] = contact
+  msg.set_content(message)
+  mail_server.send_message(msg)
+
+
        
 #print(response.status_code)
-
 response = requests.post(url, headers=headers, json=data)
 trip_time = get_trip_time(response)
 write_to_log(log_file, trip_time)
-print(f'The current estimated commute to work will take {make_readable(trip_time)}.')
-find_difference(log_file)
+msg = (f'The current estimated commute to work will take {make_readable(trip_time)}.\n\n')
+msg += find_difference(log_file)
+print(msg)
+send_email(msg)
