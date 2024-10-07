@@ -20,12 +20,15 @@ echo "What email address do you want to get alerts to?
 read contact
 printf "export CONTACT=\'${contact}\'\n" >> ~/.bashrc
 ##
+echo "What is your Google API key?
+>"
+read key
+printf "export GOOGLE_API_KEY=\'${key}\'\n" >> ~/.bashrc
+##
 
-api='AIzaSyBUbL5MXEsIBWaCTodfTJl6XjQaEAPaCEg'
 server='free.smtp.access@gmail.com'
 login='ynqr qoxt omyw nlng'
 
-printf "export GOOGLE_API_KEY=\'${api}\'\n" >> ~/.bashrc
 printf "export SNMP_SERVER=\'${server}\'\n" >> ~/.bashrc
 printf "export SNMP_LOGIN=\'${login}\'\n" >> ~/.bashrc
 
