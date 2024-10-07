@@ -1,34 +1,38 @@
 #!/usr/bin/env bash
 
-echo "What is your home address?
->"
-read home
-printf "export HOME_ADDRESS=\'${home}\'\n" >> ~/.bashrc
-##
-echo "What is your work address?
->"
-read work
-printf "export WORK_ADDRESS=\'${work}\'\n" >> ~/.bashrc
-##
-echo "What file do want to store historical data in?
->"
-read log
-printf "export LOG_FILE=\'${log}\'\n" >> ~/.bashrc
-##
-echo "What email address do you want to get alerts to?
->"
-read contact
-printf "export CONTACT=\'${contact}\'\n" >> ~/.bashrc
-##
-echo "What is your Google API key?
->"
-read key
-printf "export GOOGLE_API_KEY=\'${key}\'\n" >> ~/.bashrc
-##
+declare -A env_vars
+
+env_vars['home address']=HOME_ADDRESS
+env_vars['work address']=WORK_ADDRESS
+env_vars['log file']=LOG_FILE
+env_vars['email contact']=CONTACT
+env_vars['API key']=GOOGLE_API_KEY
+
+
+for i in "${!env_vars[@]}"
+do
+    if [[ -n ${!env_vars[$i]} ]]; then
+        echo "Your $i already exists, do you want to replace it? (y/n)"
+        read response
+        if [ ${response} = "n" ]; then
+            :
+        elif [ ${response} = "y" ]; then
+            printf "What is your new $i?\n>"
+            read val
+            printf "export ${env_vars[$i]}=\'${val}\'\n" >> ~/.bashrc
+        else
+            echo "invalid response"
+        fi
+    else
+        printf "What is your $i?\n>"
+        read input
+        printf "export ${env_vars[$i]}=\'${input}\'\n" >> ~/.bashrc
+    fi
+done
+
 
 server='free.smtp.access@gmail.com'
 login='ynqr qoxt omyw nlng'
-
 printf "export SNMP_SERVER=\'${server}\'\n" >> ~/.bashrc
 printf "export SNMP_LOGIN=\'${login}\'\n" >> ~/.bashrc
 
