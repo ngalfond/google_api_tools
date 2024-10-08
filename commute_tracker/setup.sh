@@ -17,6 +17,7 @@ do
         if [ ${response} = "n" ]; then
             :
         elif [ ${response} = "y" ]; then
+            sed -i "/${env_vars[$i]}/d" ~/.bashrc
             printf "What is your new $i?\n>"
             read val
             printf "export ${env_vars[$i]}=\'${val}\'\n" >> ~/.bashrc
@@ -30,7 +31,8 @@ do
     fi
 done
 
-
+sed -i "/SNMP_SERVER/d" ~/.bashrc
+sed -i "/SNMP_LOGIN/d" ~/.bashrc
 server='free.smtp.access@gmail.com'
 login='ynqr qoxt omyw nlng'
 printf "export SNMP_SERVER=\'${server}\'\n" >> ~/.bashrc
