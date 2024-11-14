@@ -17,25 +17,25 @@ do
         if [ ${response} = "n" ]; then
             :
         elif [ ${response} = "y" ]; then
-            sed -i "/${env_vars[$i]}/d" ~/.bashrc
+            sed -i "/${env_vars[$i]}/d" ~/.bash_profile
             printf "What is your new $i?\n>"
             read val
-            printf "export ${env_vars[$i]}=\'${val}\'\n" >> ~/.bashrc
+            printf "export ${env_vars[$i]}=\'${val}\'\n" >> ~/.bash_profile
         else
             echo "invalid response"
         fi
     else
         printf "What is your $i?\n>"
         read input
-        printf "export ${env_vars[$i]}=\'${input}\'\n" >> ~/.bashrc
+        printf "export ${env_vars[$i]}=\'${input}\'\n" >> ~/.bash_profile
     fi
 done
 
-sed -i "/SNMP_SERVER/d" ~/.bashrc
-sed -i "/SNMP_LOGIN/d" ~/.bashrc
+sed -i "/SNMP_SERVER/d" ~/.bash_profile
+sed -i "/SNMP_LOGIN/d" ~/.bash_profile
 server='free.smtp.access@gmail.com'
 login='ynqr qoxt omyw nlng'
-printf "export SNMP_SERVER=\'${server}\'\n" >> ~/.bashrc
-printf "export SNMP_LOGIN=\'${login}\'\n" >> ~/.bashrc
+printf "export SNMP_SERVER=\'${server}\'\n" >> ~/.bash_profile
+printf "export SNMP_LOGIN=\'${login}\'\n" >> ~/.bash_profile
 
 exec $SHELL
