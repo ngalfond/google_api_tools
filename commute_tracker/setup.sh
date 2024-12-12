@@ -34,7 +34,7 @@ done
 sed -i "/SNMP_SERVER/d" ~/.bash_profile
 sed -i "/SNMP_LOGIN/d" ~/.bash_profile
 server='free.smtp.access@gmail.com'
-login='ynqr qoxt omyw nlng'
+login='wygh lbzb ravz vapu'
 printf "export SNMP_SERVER=\'${server}\'\n" >> ~/.bash_profile
 printf "export SNMP_LOGIN=\'${login}\'\n" >> ~/.bash_profile
 
